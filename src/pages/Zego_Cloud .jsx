@@ -1,5 +1,6 @@
 import React from 'react'
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
+import { ZegoSuperBoardManager } from "zego-superboard-web";
 
 const Zego_Cloud = () => {
   const roomID = '12345';
@@ -11,25 +12,56 @@ const Zego_Cloud = () => {
 
     // Create instance object from Kit Token.
     const zp = ZegoUIKitPrebuilt.create(kitToken);
-    // start the call
-    zp.joinRoom({
-      container: element,
-      sharedLinks: [
-        {
-          name: 'Shear Link',
-          url:
-            window.location.protocol + '//' +
-            window.location.host + window.location.pathname +
-            '?roomID=' +
-            roomID,
+
+    // Display the whiteboard
+    zp.addPlugins({ ZegoSuperBoardManager }),
+
+      // start the call
+      zp.joinRoom({
+        container: element,
+        sharedLinks: [
+          {
+            name: 'Shear Link',
+            url:
+              window.location.protocol + '//' +
+              window.location.host + window.location.pathname +
+              '?roomID=' +
+              roomID,
+          },
+        ],
+
+        // group call
+        scenario: {
+          mode: ZegoUIKitPrebuilt.GroupCall, // 1-on-1 calls [ZegoUIKitPrebuilt.OneONoneCall].
         },
-      ],
-      scenario: {
-        mode: ZegoUIKitPrebuilt.GroupCall, // To implement 1-on-1 calls, modify the parameter here to [ZegoUIKitPrebuilt.OneONoneCall].
-      },
-    });
 
+        showWhiteboard: true, // Display the whiteboard button in the UI
 
+        // camera regulation
+        videoResolutionList: [
+          ZegoUIKitPrebuilt.VideoResolution_180P,
+          ZegoUIKitPrebuilt.VideoResolution_360P,
+          ZegoUIKitPrebuilt.VideoResolution_480P,
+          ZegoUIKitPrebuilt.VideoResolution_720P,
+        ],
+        videoResolutionDefault: ZegoUIKitPrebuilt.VideoResolution_720P,
+
+        // Meeting join and leave alart
+        onJoinRoom: () => {
+          alert("Joined after approval ✅");
+        },
+        onLeaveRoom: () => {
+          alert("User left the room");
+        },
+
+        // Avatar
+        onUserAvatarSetter: (userList) => {
+          userList.forEach(user => {
+            user.setUserAvatar(`/public/avatar.png`)
+          })
+        },
+
+      });
   };
 
   return (
