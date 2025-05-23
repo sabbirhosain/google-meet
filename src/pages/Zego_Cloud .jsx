@@ -48,7 +48,7 @@ const Zego_Cloud = () => {
 
         // Meeting join and leave alart
         onJoinRoom: () => {
-          alert("Joined after approval ✅");
+          alert("Joined after approval");
         },
         onLeaveRoom: () => {
           alert("User left the room");
